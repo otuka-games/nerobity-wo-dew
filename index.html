@@ -932,8 +932,7 @@ for(let i=0;i<3;i++){const x=88+i*48,r=S.reels[i];R(x,30,46,56,'#fcfcfc');ctx.sa
 R(78,55,7,6,'#f8b800');R(235,55,7,6,'#f8b800');
 R(62,94,196,30,'#000');R(64,96,192,26,'#fcfcfc');
 R(66,98,40,20,'#000');R(67,99,38,18,S.st==='spin'?'#306830':'#58b858');TB('レバー',86,102,9,'#fcfcfc','center');
-['光','達','郷'].forEach((c,i)=>{const cx=136+i*32,rr=S.reels[i],on=S.st==='spin'&&rr.stop==null;R(cx-10,98,20,20,'#000');R(cx-9,99,18,18,on?(NOW/150|0)%2?'#f8d800':'#d82800':'#707070');TB(c,cx,101,12,on?'#180000':'#fcfcfc','center','#000')});
-R(220,98,38,20,'#000');R(221,99,36,18,'#505058');TB('もどる',239,102,9,'#fcfcfc','center');
+['光','津','郷'].forEach((c,i)=>{const cx=136+i*32,rr=S.reels[i],on=S.st==='spin'&&rr.stop==null;R(cx-10,98,20,20,'#000');R(cx-9,99,18,18,on?(NOW/150|0)%2?'#f8d800':'#d82800':'#707070');TB(c,cx,101,12,on?'#180000':'#fcfcfc','center','#000')}); R(220,98,38,20,'#000');R(221,99,36,18,'#505058');TB('もどる',239,102,9,'#fcfcfc','center');
 R(62,124,196,40,'#000');R(64,126,192,36,'#d85010');R(68,127,184,26,'#000');
 [['COIN',98,S.c,'#58f858'],['WIN',160,S.win,fl?'#f8d800':'#58f858'],[S.bonus>0?'BONUS':'GAME',222,S.bonus>0?S.bonus:S.g,S.bonus>0&&(NOW/200|0)%2?'#f8d800':'#58f858']].forEach(([l,cx,v,c])=>{TB(l,cx,128,8,'#fcfcfc','center');num(String(Math.max(0,v)).padStart(3,'0'),cx,138,2,c)});
 if(S.free)TB('REPLAY',70,115,7,'#3cbcfc','center');
