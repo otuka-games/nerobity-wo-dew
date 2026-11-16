@@ -828,6 +828,12 @@ if(pt<.4){ctx.fillStyle='rgba(255,255,255,'+(.8*(1-pt/.4)).toFixed(2)+')';ctx.fi
 let dnT=0,pw='',pmsg='',slot=null,yami={kaki:0,nail:0,drink:0,nero:0,form:null},yamiSel=0,yamiOff=0,yamiMsg='';
 const YAMI=[{id:'kaki',n:'闇柿',d:'試合開始:ダメージ半分10秒＋HP10かいふく',p:10},{id:'nail',n:'ハラの爪切り',d:'試合開始:ゾーン10秒 敵の動きが1/2',p:15},{id:'drink',n:'滋養ドリンク',d:'つぎの試合 さいだいHP+20',p:20},{id:'nero',n:'ネロ玉',d:'つぎの試合 ネロビティゲージ満タン',p:25},
 {id:'zeo',n:'変身札:ゼオ',d:'つぎの試合 ゼオに変身 A+Dで突進',p:25,f:1},{id:'izeki',n:'変身札:井関',d:'つぎの試合 井関に変身 力2倍 A+Dでサックス',p:50,f:1},{id:'mitsu',n:'変身札:光津 郷',d:'つぎの試合 光津 郷に変身 A+Dで3連射',p:30,f:1},{id:'tea',n:'変身札:お茶',d:'つぎの試合 お茶に変身 A+Dでお茶ビーム',p:30,f:1},{id:'hero',n:'変身札:トンカチ勇者',d:'つぎの試合 トンカチ勇者に変身 A+Dで一撃',p:35,f:1},{id:'shake',n:'変身札:塩鮭の幹部',d:'つぎの試合 塩鮭の幹部に変身 A+Dで鮭弾',p:35,f:1},{id:'chain',n:'変身札:チェーンソー剣道部',d:'つぎの試合 チェーンソー剣道部に変身 A+Dで斬撃',p:40,f:1},{id:'jojo',n:'変身札:川端ジョジョ様',d:'つぎの試合 川端ジョジョ様に変身 A+Dでオラ連打',p:40,f:1},{id:'oba',n:'変身札:おばちゃん',d:'つぎの試合 おばちゃんに変身 A+Dでスタンド技',p:40,f:1},{id:'asagao',n:'変身札:ユンケルアサガオ',d:'つぎの試合 ユンケルアサガオに変身 A+Dで咆哮',p:45,f:1}];
+/* コインと闇市のもちものは ずっと引き継ぐ（ブラウザに保存） */
+let slotCoins=100,slotSaved='';
+const SLOT_KEY='kohtsugo_slot_v1';
+function slotLoad(){try{const o=JSON.parse(localStorage.getItem(SLOT_KEY)||'null');if(!o)return;if(Number.isFinite(o.c))slotCoins=Math.max(0,Math.floor(o.c));const y=o.y||{};for(const k of['kaki','nail','drink','nero'])yami[k]=Math.max(0,y[k]|0);yami.form=YAMI.some(v=>v.f&&v.id===y.form)?y.form:null;slotSaved=slotCoins+'|'+JSON.stringify(yami)}catch(e){}}
+function slotSave(){const c=slot?slot.c:slotCoins,k=c+'|'+JSON.stringify(yami);if(k===slotSaved)return;slotSaved=k;slotCoins=c;try{localStorage.setItem(SLOT_KEY,JSON.stringify({c:c,y:yami}))}catch(e){}}
+slotLoad();
 const PWD='F47E63Q',KEYS='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',STRIP=[3,0,1,3,0,4,3,2,0,1,3,0,5,3,4,0,1,3,2,0],SL=20,CELL=24,NEED={replay:[3,3,3],bell:[0,0,0],melon:[1,1,1],cherry:[2,null,null],BIG:[5,5,5],REG:[4,4,5],miss:[null,null,null]},md=n=>((n%SL)+SL)%SL;
 function passBack(){ph='howto';howtoScroll=0;pt=0;dnT=0;sfx([[330,.05]],'square',.03)}
 function passAdd(c){if(pw.length<7){pw+=c;sfx([[600+pw.length*40,.03]],'square',.03)}}
@@ -837,7 +843,7 @@ function pClick(x,y){if(ph==='pass'){const kx=Math.floor((x-16)/24),ky=Math.floo
 if(ph==='slot'){if(slot.st==='market'){if(y>=156&&x>=232&&x<300)yamiClose();else if(y>=44&&y<156&&x>=20&&x<300)yamiBuy(yamiOff+Math.min(3,Math.floor((y-44)/28)));return}if(y>=98&&y<120){if(x>=66&&x<106)slotPress('a');else if(x>=120&&x<216){const i=Math.floor((x-120)/32),r=slot.reels[Math.min(2,i)];if(slot.st==='spin'&&r.stop==null)slotStop(Math.min(2,i))}else if(x>=220&&x<258)slotPress('d')}else if(x>=262&&x<316&&y>=156&&y<169)yamiOpen()}}
 function winOf(q){const[a,b,c]=q;if(a===b&&b===c)return{3:'replay',0:'bell',1:'melon',5:'BIG'}[a]||null;if(a===4&&b===4&&c===5)return'REG';if(a===2)return'cherry';return null}
 function lot(){const r=Math.random()*1000;return r<150?'replay':r<400?'bell':r<470?'melon':r<550?'cherry':r<565?'BIG':r<580?'REG':'miss'}
-function slotInit(){slot={c:100,g:0,best:100,st:'idle',win:0,fl:0,free:false,bonus:0,bpay:0,inB:false,pend:null,role:'miss',msg:'レバー(A)をおして スタート！',reels:[0,1,2].map(i=>({p:i*7,v:0,stop:null,done:true}))}}
+function slotInit(reset){if(reset)slotCoins=100;slot={c:slotCoins>=3?slotCoins:100,g:0,best:Math.max(100,slotCoins),st:'idle',win:0,fl:0,free:false,bonus:0,bpay:0,inB:false,pend:null,role:'miss',msg:'レバー(A)をおして スタート！',reels:[0,1,2].map(i=>({p:i*7,v:0,stop:null,done:true}))}}
 function slotStop(i){const S=slot,r=S.reels[i];if(r.stop!=null)return;const c0=Math.ceil(r.p),key=S.pend||S.role,need=NEED[key][i],pv=S.reels.map(x=>x.stop!=null?STRIP[md(x.stop)]:null);let d=-1;
 if(need!=null)for(let k=0;k<4;k++)if(STRIP[md(c0+k)]===need){d=k;break}
 if(d<0)for(let k=0;k<4;k++){const y=STRIP[md(c0+k)];let ok=true;if(i===0)ok=y!==2;else if(i===1)ok=pv[0]==null||y!==pv[0];else if(pv[0]!=null&&pv[1]!=null)ok=winOf([pv[0],pv[1],y])===null;if(ok){d=k;break}}
@@ -859,7 +865,7 @@ function useYami(){const m=[];
  let fm=null;if(yami.form){fm=YAMI.find(v=>v.id===yami.form);if(yami.form==='izeki')P.izeki=1;else P.form=yami.form;yami.form=null}
  if(fm)ban('中村が'+fm.n.replace('変身札:','')+'に変身！','#f8b800',16,2);
  else if(m.length)ban('闇市アイテム発動！ '+m.join('・'),'#d890f8',13,2);
- if(fm||m.length)sfx([[392,.05],[523,.05],[784,.1]],'triangle',.05)}
+ if(fm||m.length)sfx([[392,.05],[523,.05],[784,.1]],'triangle',.05);slotSave()}
 function drawYami(S){const R=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h)};
  ctx.save();ctx.globalAlpha=.93;R(0,0,W,H,'#0a0010');ctx.restore();
  R(12,3,296,174,'#7828a8');R(14,5,292,170,'#12001c');
@@ -875,8 +881,8 @@ function drawYami(S){const R=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h)
  TB(yamiMsg,20,160,9,'#fcfcfc','left');
  R(236,158,60,15,'#f8b800');R(237,159,58,13,'#300050');TB('もどる',266,160,9,'#fcfcfc','center')}
 function slotPress(b){if(b==='c'||b==='cow'){if(slot.st==='market')yamiClose();else yamiOpen();return}
-if(slot.st==='market'){if(b==='u'||b==='l')yamiMove(-1);else if(b==='dn'||b==='r')yamiMove(1);else if(b==='a')yamiBuy(yamiSel);else if(b==='d')yamiClose();return}if(b==='d'){ph='title';modeSelect=2;pt=0;return}if(b!=='a')return;
-if(slot.st==='over'){slotInit();sfx([[660,.05],[880,.08]],'square',.04);return}
+if(slot.st==='market'){if(b==='u'||b==='l')yamiMove(-1);else if(b==='dn'||b==='r')yamiMove(1);else if(b==='a')yamiBuy(yamiSel);else if(b==='d')yamiClose();return}if(b==='d'){slotSave();ph='title';modeSelect=2;pt=0;return}if(b!=='a')return;
+if(slot.st==='over'){slotInit(true);sfx([[660,.05],[880,.08]],'square',.04);return}
 if(slot.st==='spin'){const i=slot.reels.findIndex(r=>r.stop==null);if(i>=0)slotStop(i);return}
 const S=slot;S.inB=S.bonus>0;
 if(S.inB){S.bonus--;S.role='bell';S.msg='ボーナス中！ ベルを狙え'}
@@ -912,7 +918,7 @@ box=(x,y,k3,nm,pay,dim)=>{ctx.fillStyle='#f8b800';ctx.fillRect(x,y,56,38);ctx.fi
 TB('コインがふえる',31,25,8,'#f8b800','center');TB('とくべつ',289,25,8,'#f8b800','center');
 box(3,36,[0,0,0],'ベル','10まい');box(3,77,[1,1,1],'スイカ','8まい');box(3,118,[2,2,2],'チェリー','左だけ2まい',true);
 box(261,36,[3,3,3],'リプレイ','つぎタダ');box(261,77,[5,5,5],'BIG','ボーナス8G');box(261,118,[4,4,5],'REG','ボーナス5G')}
-function drawSlot(){const S=slot,R=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h)},fl=S.fl>0&&(NOW/100|0)%2,pk=S.pend&&(NOW/180|0)%2,lit=fl||pk;ctx.fillStyle='#180000';ctx.fillRect(0,0,W,H);
+function drawSlot(){slotSave();const S=slot,R=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h)},fl=S.fl>0&&(NOW/100|0)%2,pk=S.pend&&(NOW/180|0)%2,lit=fl||pk;ctx.fillStyle='#180000';ctx.fillRect(0,0,W,H);
 /* 左上：リール内の光津郷と同じ顔シンボル(symDrawの4番)を拡大表示 */
 const faceGlow=!!S.pend,facePulse=(NOW/115|0)%2;
 if(faceGlow){ctx.save();ctx.shadowColor=facePulse?'#fff36a':'#f8b800';ctx.shadowBlur=facePulse?15:8;R(7,1,48,43,facePulse?'#fff36a':'#f8b800');ctx.restore()}
