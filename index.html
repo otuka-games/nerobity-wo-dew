@@ -907,7 +907,7 @@ function pcBodyJ(R,x,y,up,tint){R(x+3,y-20,5,20,'#181820');R(x+10,y-20,5,20,'#18
 function pcBodyT(R,x,y,tint){R(x+3,y-20,5,20,'#000');R(x+10,y-20,5,20,'#000');R(x+2,y-3,7,3,'#000');R(x+9,y-3,7,3,'#000');R(x+1,y-46,16,28,'#fcfcfc');R(x+1,y-46,2,28,'#bcbcbc');R(x+1,y-27,16,3,'#000');R(x+9,y-43,1,1,'#bcbcbc');R(x+9,y-39,1,1,'#bcbcbc');R(x+9,y-35,1,1,'#bcbcbc');
  R(x-1,y-44,4,18,'#fcfcfc');R(x-1,y-27,4,3,'#f8b878');R(x+15,y-44,4,18,'#fcfcfc');R(x+15,y-27,4,3,'#f8b878');pcHeadT(R,x+2,y-62,tint)}
 function pcJizo(R,x,y,c,hot){R(x+3,y,6,5,'#b8b8b0');R(x+2,y+1,8,3,'#b8b8b0');R(x+4,y+2,1,1,'#202020');R(x+7,y+2,1,1,'#202020');R(x+2,y+5,8,2,c);R(x+1,y+7,10,5,'#a8a8a0');R(x+4,y+7,4,3,c);if(hot)R(x+5,y-1,2,1,'#fff')}
-const PB_NEXT=[[[0,['テンポ上げよう、もう一回！']],[1,['はい、もう一回！']]],[[0,['マイクの調子悪かった、もう一回']],[1,['さっき普通だったよ']]],[[1,['テンポ上げよう、もう一回！']],[0,['今のも撮れてたよ']]],[[0,['マイクの調子悪かった、もう一回']],[1,['それ毎回言ってる']]]];
+const PB_NEXT=[[[2,['テンポ上げよう、もう一回！']],[1,['はい、もう一回！']]],[[2,['マイクの調子悪かった、もう一回']],[1,['さっき普通だったよ']]],[[2,['テンポ上げよう、もう一回！']],[1,['今のも撮れてたよ']]],[[2,['マイクの調子悪かった、もう一回']],[1,['それ毎回言ってる']]]];
 const PS_J=[['台になりたい…'],['ジャラ…ジャラ…'],['玉がうまい…'],['おれが台だ'],['入れ入れ入れ…']],PS_T=[['もう帰ろうよ…'],['そろそろ帰ろう'],['台になるって何…'],['なんで付き合うんだ'],['…まだやるの？']];
 function pachiOpen(){if(!slot||slot.st!=='idle')return;ph='pachi';pachi={b:[],cd:0,auto:true,hold:[],sp:null,bn:null,kk:0,msg:'ねらって うて！',msgT:3,say:null,sayT:0,q:[],start:slot.c,tot:0,hits:0,spins:0,since:0,fl:0,idleT:6,res:[7,7,7],logo:null,vib:0,fx:[],big:null,fwT:0};
  pachiSay(0,['台になりたい…']);sfx([[392,.05],[523,.05]],'square',.04)}
@@ -989,7 +989,7 @@ function pachiReachFull(R,S_){const u=Math.min(1,S_.rt/3.3),flash=(NOW/90|0)%2;
   if(u>.55){R(240,150,26,18,'#8a8a90');R(238,148,30,4,'#b0b0b8')}
   if(u>.7&&S_.hit){const f=Math.min(1,(u-.7)/.22);for(let i=0;i<30;i++){const t=f-i*.018;if(t<=0)continue;const px=168+t*92*(.55+(i%5)*.14),py=92+t*14+t*t*(70+(i%4)*16);R(px,py,5,5,i%3?'#78c040':'#a8d860')}
    if(f>.6)R(190,150,Math.min(70,(f-.6)*190),6,'#78c040')}
-  const cap=u<.3?'本番5秒前…':u<.55?'緊張で顔が青ざめる…':u<.72?'うっ…！':S_.hit?'オエェェェ！！':'ゲロが出なかった…';
+  const cap=u<.3?'平山犬が鏡を見ている…':u<.55?'急にトイレへダッシュ！':u<.72?'オロロロ…':S_.hit?'ゲロリーチ成功！！':'間に合った…';
   R(0,150,320,30,'rgba(0,0,0,.55)');TB(cap,160,155,16,u>.72?'#c8f080':'#fcfcfc','center','#000');
  }else{
   /* 井関がサックスを吹き、そこからうんちを作り出す演出 */
@@ -1132,7 +1132,7 @@ function drawPachi(){slotSave();const P_=pachi;if(!P_)return;if(!pachiCabCv){pac
   else if(S_&&S_.ph==='next'){R(L.x,sy0,L.w,SH,'rgba(0,10,40,.6)');TB('NEXT '+S_.k,161,sy0+11,17,'#002040','center','#002040');TB('NEXT '+S_.k,160,sy0+10,17,(NOW/90|0)%2?'#80f8ff':'#fff','center','#0070a0')}
   if(P_.kk>0&&!bonus){R(L.x+L.w-34,sy0+2,32,9,'rgba(0,0,0,.6)');TB('確変 '+P_.kk,L.x+L.w-18,sy0+3,7,'#f8d800','center','#000')}
   if(P_.big){const t=P_.big.t,sz=Math.round(18-Math.min(6,t*14)+Math.sin(t*14)*1.5);R(L.x,sy0+4,L.w,32,'rgba(0,0,0,.65)');TB('大当たり！！',161,sy0+9,sz,'#400000','center','#400000');TB('大当たり！！',160,sy0+8,sz,(NOW/80|0)%2?'#f8d800':'#fff','center','#e03010')}
-  if(P_.sayT>0&&P_.say){R(L.x+1,sy0+SH-12,L.w-2,11,'rgba(0,0,0,.78)');TB((P_.say.who?'中村':'平山')+'「'+P_.say.lines[0]+'」',160,sy0+SH-10,6,P_.say.who?'#f8d890':'#80d8fc','center','#000')}
+  if(P_.sayT>0&&P_.say){R(L.x+1,sy0+SH-12,L.w-2,11,'rgba(0,0,0,.78)');TB((P_.say.who===2?'ハラちゃん':P_.say.who?'中村':'平山')+'「'+P_.say.lines[0]+'」',160,sy0+SH-10,6,P_.say.who?'#f8d890':'#80d8fc','center','#000')}
   /* 液晶の走査線 */
   ctx.globalAlpha=.07;for(let y=sy0;y<sy0+SH;y+=2)R(L.x,y,L.w,1,'#000');ctx.globalAlpha=1;
   /* 下の帯：保留（地蔵）と数字 */
@@ -1189,7 +1189,7 @@ function drawPachi(){slotSave();const P_=pachi;if(!P_)return;if(!pachiCabCv){pac
   R(cx-12,cy+9,24,5,'#404048');R(cx-12,cy+9,24,1,'#808090');ctx.fillStyle=col;ctx.beginPath();ctx.arc(cx,cy,11,Math.PI,0);ctx.fill();R(cx-11,cy,22,9,col);R(cx-6,cy-8,4,6,'rgba(255,255,255,.55)');ctx.restore()}
  R(247,84,66,44,'#000');R(248,85,64,42,'#081018');R(248,85,64,1,'#1a4a50');TB('テロップ',280,87,6,'#58f8d8','center','#000');
  if(P_.msgT>0)TB(P_.msg,280,98,8,'#f8d800','center','#000');
- if(P_.sayT>0&&P_.say){TB(P_.say.who?'中村':'平山',280,108,7,P_.say.who?'#f8d890':'#80d8fc','center','#000');TB('「'+P_.say.lines[0]+'」',280,117,7,'#fcfcfc','center','#000')}
+ if(P_.sayT>0&&P_.say){TB(P_.say.who===2?'ハラちゃん':P_.say.who?'中村':'平山',280,108,7,P_.say.who?'#f8d890':'#80d8fc','center','#000');TB('「'+P_.say.lines[0]+'」',280,117,7,'#fcfcfc','center','#000')}
  R(247,132,66,40,'#000');R(248,133,64,38,'#1a0a00');R(248,133,64,1,'#5a3a10');TB('出玉',280,135,7,'#f8b800','center','#000');TB(String(P_.tot),280,146,16,(bonus&&(NOW/120|0)%2)?'#fff':'#f8d800','center','#000');TB('1玉=1コイン',280,163,6,'#8090b0','center','#000');
  if(reach)pachiReachZoom(R,S_)}
 
