@@ -996,7 +996,7 @@ function pachiReachFull(R,S_){const u=Math.min(1,S_.rt/3.3),flash=(NOW/90|0)%2;
   R(-4,0,330,180,'#18202c');for(let i=0;i<18;i++)R((i*47)%320,18+(i*29)%112,2,2,'#303c4c');
   R(-4,150,330,34,'#4a4a46');R(-4,148,330,3,'#77776e');
   const build=Math.max(0,Math.min(1,(u-.18)/.68));
-  drawIzeki({x:112,y:168,face:1,saxT:1,aiT:0,guard:false},168);
+  drawF({x:112,y:168,face:1,saxT:1,aiT:0,guard:false,ko:false,stun:0,walk:0,md:{cow:0,horse:0,wolf:0}},PZ,168);
   /* サックスのベルから飛び出す茶色い粒が、右側でうんちの山になる */
   if(build>0){
    for(let i=0;i<Math.floor(build*22);i++){
