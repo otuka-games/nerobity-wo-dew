@@ -843,7 +843,7 @@ function pClick(x,y){if(ph==='pass'){const kx=Math.floor((x-16)/24),ky=Math.floo
 if(ph==='pachi'){pachiClick(x,y);return}if(ph==='slot'){if(slot.st==='market'){if(y>=156&&x>=232&&x<300)yamiClose();else if(y>=44&&y<156&&x>=20&&x<300)yamiBuy(yamiOff+Math.min(3,Math.floor((y-44)/28)));return}if(y>=98&&y<120){if(x>=66&&x<106)slotPress('a');else if(x>=120&&x<216){const i=Math.floor((x-120)/32),r=slot.reels[Math.min(2,i)];if(slot.st==='spin'&&r.stop==null)slotStop(Math.min(2,i))}else if(x>=220&&x<258)slotPress('d')}else if(x>=262&&x<316&&y>=156&&y<169)yamiOpen();else if(x>=4&&x<60&&y>=156&&y<169)pachiOpen()}}
 function winOf(q){const[a,b,c]=q;if(a===b&&b===c)return{3:'replay',0:'bell',1:'melon',5:'BIG'}[a]||null;if(a===4&&b===4&&c===5)return'REG';if(a===2)return'cherry';return null}
 function lot(){const r=Math.random()*1000;return r<150?'replay':r<400?'bell':r<470?'melon':r<550?'cherry':r<565?'BIG':r<580?'REG':'miss'}
-function slotInit(reset){if(reset)slotCoins=100;slot={c:slotCoins>=3?slotCoins:100,g:0,best:Math.max(100,slotCoins),st:'idle',win:0,fl:0,free:false,bonus:0,bpay:0,inB:false,pend:null,role:'miss',msg:'レバー(A)をおして スタート！',fx:null,reels:[0,1,2].map(i=>({p:i*7,v:0,stop:null,done:true}))}}
+function slotInit(reset){if(reset)slotCoins=100;slot={c:slotCoins>=3?slotCoins:100,g:0,best:Math.max(100,slotCoins),st:'idle',win:0,fl:0,free:false,bonus:0,bpay:0,inB:false,pend:null,role:'miss',msg:'レバー(A)をおして スタート！',reels:[0,1,2].map(i=>({p:i*7,v:0,stop:null,done:true}))}}
 function slotStop(i){const S=slot,r=S.reels[i];if(r.stop!=null)return;const c0=Math.ceil(r.p),key=S.pend||S.role,need=NEED[key][i],pv=S.reels.map(x=>x.stop!=null?STRIP[md(x.stop)]:null);let d=-1;
 if(need!=null)for(let k=0;k<4;k++)if(STRIP[md(c0+k)]===need){d=k;break}
 if(d<0)for(let k=0;k<4;k++){const y=STRIP[md(c0+k)];let ok=true;if(i===0)ok=y!==2;else if(i===1)ok=pv[0]==null||y!==pv[0];else if(pv[0]!=null&&pv[1]!=null)ok=winOf([pv[0],pv[1],y])===null;if(ok){d=k;break}}
@@ -1032,8 +1032,7 @@ function pachiLogos(R,t){const u=t/1.7,e=x=>1-(1-x)*(1-x),p=u<.25?e(u/.25):u<.75
  for(let i=0;i<4;i++){const x=cn[i][0]+(tg[i][0]-cn[i][0])*p,y=cn[i][1]+(tg[i][1]-cn[i][1])*p+Math.sin(NOW/80+i)*(p>.9?1.5:0);
   R(x-1,y-1,36,14,'#000');R(x,y,34,12,(NOW/90+i|0)%2?'#d01818':'#f02828');R(x,y,34,1,'#f8d800');R(x,y+11,34,1,'#f8d800');TB('転転飯店',x+17,y+2,7,'#f8d800','center','#400000')}
  if(p>.85){const sc=(k,ox,oy)=>(x,y,w,h,c)=>R(ox+x*k,oy+y*k,Math.max(1,Math.round(w*k)),Math.max(1,Math.round(h*k)),c);
-  R(143,36,17,18,'#000');R(144,37,15,16,'#f8d8a0');pcHeadJ(sc(.6,147,43),0,0);R(160,36,17,18,'#000');R(161,37,15,16,'#f8d8a0');pcHeadT(sc(.6,164,43),0,0);
-  pcBodyJ(sc(.48,72,124),0,0,false);pcBodyT(sc(.48,232,124),0,0)}}
+  R(143,36,17,18,'#000');R(144,37,15,16,'#f8d8a0');pcHeadJ(sc(.6,147,43),0,0);R(160,36,17,18,'#000');R(161,37,15,16,'#f8d8a0');pcHeadT(sc(.6,164,43),0,0)}}
 function pfx(x,y,n,pal,spd,life){const P_=pachi;if(!P_)return;for(let i=0;i<n&&P_.fx.length<320;i++){const a=Math.random()*6.283,v=spd*(.4+Math.random()*.8);P_.fx.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-spd*.3,t:life*(.6+Math.random()*.6),c:pal[(Math.random()*pal.length)|0]})}}
 const PFW=['#f8d800','#ff5038','#58f858','#40c8ff','#ff70f0','#fff'];
 const LCD={x:116,y:22,w:88,h:66};
@@ -1196,18 +1195,18 @@ function drawPachi(){slotSave();const P_=pachi;if(!P_)return;if(!pachiCabCv){pac
 function slotPress(b){if(b==='c'||b==='cow'){if(slot.st==='market')yamiClose();else yamiOpen();return}
 if(slot.st==='market'){if(b==='u'||b==='l')yamiMove(-1);else if(b==='dn'||b==='r')yamiMove(1);else if(b==='a')yamiBuy(yamiSel);else if(b==='d')yamiClose();return}if(b==='d'){slotSave();ph='title';modeSelect=2;pt=0;return}if(b!=='a')return;
 if(slot.st==='over'){slotInit(true);sfx([[660,.05],[880,.08]],'square',.04);return}
-if(slot.st==='spin'){const i=slot.reels.findIndex(r=>r.stop==null);if(i>=0)slotStop(i);return}if(slot.st==='演出')return;
+if(slot.st==='spin'){const i=slot.reels.findIndex(r=>r.stop==null);if(i>=0)slotStop(i);return}
 const S=slot;S.inB=S.bonus>0;
 if(S.inB){S.bonus--;S.role='bell';S.msg='ボーナス中！ ベルを狙え'}
 else{if(S.free)S.free=false;else S.c-=5;S.role=S.pend?'miss':lot();S.msg='ストップ！ 左から順に止めよう';if(!S.pend&&(S.role==='BIG'||S.role==='REG')){S.pend=S.role;S.role='miss'}if(S.pend)S.msg='ペカッ！！ 7を狙え！'}
 S.g++;S.st='spin';S.win=0;S.fl=0;S.reels.forEach((r,i)=>{r.p=md(r.p);r.v=10+i;r.stop=null;r.done=false});sfx([[200,.04],[300,.04],[400,.06]],'square',.04)}
-function slotUpd(dt){const S=slot;if(S.fl>0)S.fl-=dt;if(S.fx){S.fx.t+=dt;if(S.fx.t>=4.8){S.fx=null;S.st=(S.c<5&&!S.free&&S.bonus===0)?'over':'idle'}return}if(S.st!=='spin')return;let all=true;for(const r of S.reels){if(r.done)continue;if(r.stop==null)r.p+=r.v*dt;else{r.p+=Math.min(r.stop-r.p,14*dt);if(r.stop-r.p<.001){r.p=r.stop;r.done=true;sfx([[120,.04]],'square',.05)}}if(!r.done)all=false}
+function slotUpd(dt){const S=slot;if(S.fl>0)S.fl-=dt;if(S.st!=='spin')return;let all=true;for(const r of S.reels){if(r.done)continue;if(r.stop==null)r.p+=r.v*dt;else{r.p+=Math.min(r.stop-r.p,14*dt);if(r.stop-r.p<.001){r.p=r.stop;r.done=true;sfx([[120,.04]],'square',.05)}}if(!r.done)all=false}
 if(all){const stops=S.reels.map(r=>md(r.p)),q=stops.map(n=>STRIP[n]),top=stops.map(n=>STRIP[md(n+1)]),bottom=stops.map(n=>STRIP[md(n-1)]),rows=[top,q,bottom,[top[0],q[1],bottom[2]],[bottom[0],q[1],top[2]]],wins=rows.map(winOf),lineWins=wins.filter(Boolean),bonusWin=lineWins.includes('BIG')?'BIG':lineWins.includes('REG')?'REG':null;let win=0,m='はずれ…';
 if(bonusWin&&!S.inB){S.bonus=bonusWin==='BIG'?8:5;S.bpay=bonusWin==='BIG'?10:8;S.pend=null;m=bonusWin==='BIG'?'BIG BONUS！！ 8G':'REG BONUS！ 5G';S.fl=2.4;sfx([[523,.08],[659,.08],[784,.08],[1047,.08],[784,.08],[1047,.25]],'square',.05)}
 else{const replay=lineWins.includes('replay');if(replay){S.free=true;m='リプレイ！ 次は3枚いらない'}const pays={bell:S.inB?S.bpay:10,melon:8,cherry:2};for(const v of lineWins)if(pays[v]!=null)win+=pays[v];if(win>0){const count=lineWins.filter(v=>pays[v]!=null).length;m=(replay?'リプレイ！ ':'')+(count>1?count+'ライン！ ':'')+(S.inB?'ボーナス +':'当たり！ +')+win+(S.inB?'  のこり'+S.bonus+'G':'枚')}}
 if(S.inB&&S.bonus===0&&lineWins.includes('bell'))m+=' ボーナス終了';
 S.c+=win;S.win=win;S.best=Math.max(S.best,S.c);S.msg=m;if(win>=8){S.fl=1.4;sfx([[784,.06],[988,.06],[1319,.12]],'square',.05)}
-const hit=!!bonusWin||win>0,kind=(S.role==='BIG'||bonusWin==='BIG'||Math.random()<.5)?'gero':'unchi';S.fx={t:0,hit,kind,replay:lineWins.includes('replay'),revive:hit&&Math.random()<.12,bonus:!!bonusWin};S.st='演出';sfx([[523,.05],[659,.05],[784,.08]],'triangle',.045)}}
+S.st=(S.c<5&&!S.free&&S.bonus===0)?'over':'idle';if(S.st==='over')sfx([[300,.15],[200,.15],[120,.4]],'sawtooth',.05)}}
 function drawPass(){ctx.fillStyle='#180000';ctx.fillRect(0,0,W,H);ctx.fillStyle='#a81000';ctx.fillRect(0,0,W,25);T('パスワード',160,4,17,'#f8b800','center');ctx.fillStyle='#f8b800';ctx.fillRect(7,28,306,1);
 for(let i=0;i<7;i++){const x=48+i*32;ctx.fillStyle='#f8b800';ctx.fillRect(x,36,28,30);ctx.fillStyle='#000';ctx.fillRect(x+2,38,24,26);if(pw[i])T(pw[i],x+14,41,18,'#fcfcfc','center');else if(i===pw.length&&(NOW/300|0)%2){ctx.fillStyle='#f8b800';ctx.fillRect(x+6,58,16,2)}}
 const sh=pmsg&&pt<.4?((NOW/40|0)%2?2:-2):0;T(pmsg||'キーボードか 画面のキーで にゅうりょく',160+sh,70,9,pmsg?'#f8b800':'#bcbcbc','center');
@@ -1251,43 +1250,7 @@ TB(S.msg,160,154,9,'#fcfcfc','center');TB('A:レバー/ストップ　D:もど�
 {const can=S.st==='idle',inv=yami.kaki+yami.nail+yami.drink+yami.nero+(yami.form?1:0);R(262,156,54,13,'#000');R(263,157,52,11,can?((NOW/300|0)%2?'#b850e8':'#8838b8'):'#505058');TB('闇市(C)',289,158,8,can?'#fcfcfc':'#bcbcbc','center',can?'#400060':'#505058');TB('もちもの '+inv,289,170,7,'#d890f8','center');R(4,156,56,13,'#000');R(5,157,54,11,can?((NOW/300|0)%2?'#2a8a3a':'#1c6a2a'):'#505058');TB('パチンコ(P)',32,158,8,can?'#fcfcfc':'#bcbcbc','center',can?'#003010':'#505058')}
 payTable();
 if(S.st==='over'){ctx.save();ctx.globalAlpha=.88;R(40,40,240,92,'#000');ctx.restore();R(42,42,236,88,'#f8b800');R(44,44,232,84,'#180000');TB('GAME OVER',160,50,18,'#f8b800','center');TB('メダルがなくなった…',160,76,11,'#fcfcfc','center');TB('ゲーム数 '+S.g+'　さいこう '+S.best+'枚',160,94,9,'#fcfcfc','center');if((NOW/400|0)%2)TB('A:もういちど(100枚)　D:もどる',160,112,9,'#3cbcfc','center')}
-if(S.st==='market')drawYami(S);if(S.fx)drawSlotPachiFX(S.fx)}
-function drawSlotPachiFX(FX){
- const t=FX.t,R=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),Math.max(1,Math.round(w)),Math.max(1,Math.round(h)),c)};
- ctx.save();ctx.fillStyle='rgba(8,0,18,.94)';ctx.fillRect(0,0,320,180);
- const flash=(NOW/75|0)%2;
- /* 地蔵保留：白・緑・赤・青。青が最も熱い */
- const col=FX.hit?'#3878ff':(t<.65?'#c8c8c8':'#48d048');
- R(130,8,60,54,'#f8d800');R(133,11,54,48,'#241030');R(145,15,30,30,col);R(151,20,6,4,'#fff');R(163,20,6,4,'#fff');R(154,32,12,3,'#503020');R(140,45,40,5,'#d8d0c8');
- TB(FX.hit?'青地蔵保留！！':(t<.65?'地蔵保留':'緑地蔵保留'),160,66,13,FX.hit?'#70b8ff':'#fcfcfc','center','#000');
- /* 4方向から落下して合体するロゴ役物 */
- if(t>.35){const p=Math.min(1,(t-.35)/.55),e=1-(1-p)*(1-p),targets=[[110,88],[174,88],[110,104],[174,104]],starts=[[-60,-30],[320,-30],[-60,210],[320,210]];
-  for(let i=0;i<4;i++){const x=starts[i][0]+(targets[i][0]-starts[i][0])*e,y=starts[i][1]+(targets[i][1]-starts[i][1])*e;R(x,y,36,12,flash?'#f8d800':'#d82828');TB('転転',x+18,y+1,8,'#fff','center','#600')}
- }
- if(t>.95&&t<1.9){TB('ハラちゃん',160,35,17,'#f8d800','center');TB(t<1.42?'テンポ上げよう、もう一回！':'マイクの調子悪かった、もう一回！',160,132,12,'#fff','center');TB('疑似'+(t<1.42?'2':'3')+'！！',160,153,17,'#f8d800','center')}
- if(t>=1.9&&t<4.25){
-  if(FX.kind==='gero'){
-   R(18,22,284,124,'#581020');R(25,28,270,108,'#a01020');R(36,40,248,84,'#2a0818');
-   pcBodyJ((x,y,w,h,c)=>R(0+x,0+y,w,h,c),105,145,false);
-   pcBodyT((x,y,w,h,c)=>R(0+x,0+y,w,h,c),207,145);
-   TB('ゲロリーチ！！',160,8,20,'#f8d800','center','#000');
-   TB(t<2.75?'鏡の前で…':'オロロロ…！',160,148,13,'#fff','center','#000');
-  }else{
-   R(18,22,284,124,'#18202c');R(24,28,272,108,'#303c4c');
-   drawF({x:104,y:154,face:1,saxT:1,aiT:0,guard:false,ko:false,stun:0,walk:0,md:{cow:0,horse:0,wolf:0}},PZ,154);
-   TB('井関の小道具づくり',160,8,16,'#f8d800','center','#000');
-   if(t>2.55){for(let i=0;i<Math.min(8,Math.floor((t-2.55)*12));i++)R(196+i%3*7,110-Math.floor(i/3)*7,7,6,'#8a542c');TB('うんこ作っちゃった！',160,148,12,'#fff','center','#000')}
-  }
- }
- /* どのリーチにも出る激熱の背中ポン */
- if(t>2.65&&t<3.25&&FX.hit){R(0,0,320,180,'rgba(255,150,0,.72)');for(let i=0;i<18;i++){const a=i/18*Math.PI*2;ctx.strokeStyle=i%2?'#fff':'#f8d800';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(160,90);ctx.lineTo(160+Math.cos(a)*190,90+Math.sin(a)*110);ctx.stroke()}TB('背中をポン！！',160,68,24,'#fff','center','#a02010');TB('激　熱',160,112,22,'#f8d800','center','#600')}
- if(t>=3.25&&t<4.8){
-  if(FX.revive){TB('……ハズレ！？',160,30,20,'#bcbcbc','center');drawF({x:72,y:157,face:1,saxT:0,aiT:0,guard:false,ko:false,stun:0,walk:0,md:{cow:0,horse:0,wolf:0}},PZ,157);TB('ちわー。Uberでーす',205,83,15,'#f8d800','center','#600');TB('復活！！',205,112,22,'#fff','center','#a00000')}
-  else if(FX.hit){TB(FX.bonus?'ボーナス確定！！':'大当たり！！',160,70,26,flash?'#fff36a':'#f8d800','center','#600');TB(FX.kind==='gero'?'ゲロリーチ成功！':'うんこ完成！！',160,108,14,'#fff','center')}
-  else{TB('残念…',160,80,26,'#bcbcbc','center');TB('次回に期待！',160,116,13,'#fff','center')}
- }
- ctx.restore();
-}
+if(S.st==='market')drawYami(S)}
 /* down-hold timing is handled by the unified pointer controls above */
 function drawRoar(bx,by,F){const n=NOW/60|0,cols=['#fcfcfc','#f8b800','#f87820'];for(const o of[1,0])for(let i=2;i>=0;i--){const rad=7+i*4,c0=bx-F*i*7,th=i?3:4;for(let a=-1.2;a<=1.21;a+=.14){const x=Math.round(c0+F*Math.cos(a)*rad*.7),y=Math.round(by+Math.sin(a)*rad*1.2);ctx.fillStyle=o?'#000':cols[i];ctx.fillRect(x-o-(F<0?th-1:0),y-o,th+2*o-(o?0:0),th+2*o)}}for(let i=0;i<4;i++){ctx.fillStyle=i%2?'#fcfcfc':'#f8b800';ctx.fillRect(Math.round(bx-F*(14+i*6+(n%3)*2)),Math.round(by-9+i*6+(n+i)%2*2),3,2)}}
 function drawAsagao(f,X,Y){const F=f.face>0?1:-1,n=NOW/50|0,at=f.atk>0,ro=f.rr&&at,ch=f.hh&&at&&f.atk<=.2,
