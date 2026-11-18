@@ -1007,7 +1007,7 @@ function pachiReachFull(R,S_){const u=Math.min(1,S_.rt/3.3),flash=(NOW/90|0)%2;
    for(let i=0;i<lv;i++){const w=18+i*9;R(238-w/2,148-i*10,w,10,i%2?'#8a542c':'#a06a36');R(238-w/2+2,148-i*10,Math.max(3,w-4),2,'#c08a4c')}
   }
   const cap=u<.18?'井関がサックスを構える…':u<.88?'井関がサックスでうんちを作っている！':(S_.hit?'うんち完成！！':'うんちが完成しなかった…');
-  R(0,152,320,28,'rgba(0,0,0,.55)');TB(cap,160,156,14,fin&&gold?'#f8d800':'#fcfcfc','center','#000');
+  R(0,152,320,28,'rgba(0,0,0,.55)');TB(cap,160,156,14,flash?'#f8d800':'#fcfcfc','center','#000');
  }
  ctx.restore();
  /* 映像のしあげ：周辺の暗がり・走査線 */
