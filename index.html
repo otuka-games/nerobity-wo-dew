@@ -1020,7 +1020,7 @@ function pachiReachFull(R,S_){const u=Math.min(1,S_.rt/3.3),flash=(NOW/90|0)%2;
  /* 結果をはっきり */
  if(u>.93){R(0,20,320,34,'rgba(0,0,0,.7)');if(S_.hit&&!S_.revive)TB('大当たり！！',160,22,28,flash?'#f8d800':'#fff','center','#000');else TB('ハズレ…',160,24,24,'#a0a0b0','center','#000')}
  if(S_.revive&&S_.rt>=3.65){const a=Math.min(1,(S_.rt-3.65)/.35);ctx.save();ctx.globalAlpha=a;R(0,0,320,180,'#000');pachiFit('ちわー。Uberでーす',160,78,18,'#fff','center','#000',300);ctx.restore()}
- if(S_.revive&&u>.72){R(176,96,140,48,'rgba(0,0,0,.72)');drawF({x:198,y:143,face:-1,saxT:0,aiT:0,guard:false,ko:false,stun:0,walk:0,md:{cow:0,horse:0,wolf:0}},PZ,143);TB('ちわー。Uberでーす',244,105,9,'#fff','center','#000');TB('復活！！',244,122,15,'#f8d800','center','#000')}
+
  /* チャンスアップ：背中を叩く（全画面） */
  if(S_.pat>0){const k=1-S_.pat/.9;R(0,0,320,180,'#201000');for(let i=0;i<28;i++){const a=i/28*6.283;ctx.strokeStyle=i%2?'#f8d800':'#e03010';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(160,90);ctx.lineTo(160+Math.cos(a)*260,90+Math.sin(a)*260);ctx.stroke()}
   R(0,128,320,52,'#6a3a18');
