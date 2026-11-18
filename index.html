@@ -912,6 +912,7 @@ const PS_J=[['台になりたい…'],['ジャラ…ジャラ…'],['玉がう�
 function pachiOpen(){if(!slot||slot.st!=='idle')return;ph='pachi';pachi={b:[],cd:0,auto:true,hold:[],sp:null,bn:null,kk:0,msg:'ねらって うて！',msgT:3,say:null,sayT:0,q:[],start:slot.c,tot:0,hits:0,spins:0,since:0,fl:0,idleT:6,res:[7,7,7],logo:null,vib:0,fx:[],big:null,fwT:0};
  pachiSay(0,['台になりたい…']);sfx([[392,.05],[523,.05]],'square',.04)}
 function pachiClose(){ph='slot';slotSave();sfx([[330,.04]],'square',.03)}
+function pachiFit(s,x,y,sz,c,al,sh,maxW){let n=sz;ctx.font='bold '+n+'px '+FONT;while(n>4&&ctx.measureText(s).width>maxW){n-- ;ctx.font='bold '+n+'px '+FONT}TB(s,x,y,n,c,al,sh)}
 function pachiSay(who,lines){if(!pachi)return;pachi.say={who:who,lines:lines};pachi.sayT=2.2}
 function pachiRect(b,k){const x=b.x,y=b.y,r=k;const cx=Math.max(r.x,Math.min(x,r.x+r.w)),cy=Math.max(r.y,Math.min(y,r.y+r.h)),dx=x-cx,dy=y-cy,d2=dx*dx+dy*dy;
  if(x>r.x&&x<r.x+r.w&&y>r.y&&y<r.y+r.h){const ds=[x-r.x,r.x+r.w-x,y-r.y,r.y+r.h-y],m=Math.min(...ds);if(m===ds[2]){b.y=r.y-2;b.vy=-Math.abs(b.vy)*.4}else if(m===ds[3]){b.y=r.y+r.h+2;b.vy=Math.abs(b.vy)*.4}else if(m===ds[0]){b.x=r.x-2;b.vx=-Math.abs(b.vx)*.5}else{b.x=r.x+r.w+2;b.vx=Math.abs(b.vx)*.5}return}
@@ -935,7 +936,7 @@ function pachiRoll(){const P_=pachi,hit=Math.random()<(P_.kk>0?PAY.hitK:PAY.hit)
  const w=hit?[.12,.23,.27,.38]:[.78,.14,.06,.02];let x=Math.random(),c=3;for(let i=0;i<4;i++){if(x<w[i]){c=i;break}x-=w[i]}return{hit:hit,col:c}}
 function pachiPlan(r){let hit=r.hit;const nw=hit?[.4,.25,.2,.15]:[.8,.13,.05,.02];let x=Math.random(),nx=3;for(let i=0;i<4;i++){if(x<nw[i]){nx=i;break}x-=nw[i]}
  const reach=hit||Math.random()<.13+nx*.1,chance=reach&&Math.random()<(hit?.55:.15);const revive=!hit&&reach&&Math.random()<.12;if(revive)hit=true;let res;
- if(hit){const d=Math.random()<.7?7:(Math.random()*10|0);res=[d,d,d]}else{const a=Math.random()*10|0;let b2=Math.random()*10|0,c2=Math.random()*10|0;if(reach){b2=a;do{c2=Math.random()*10|0}while(c2===a)}else{while(a===b2&&b2===c2)c2=Math.random()*10|0}res=[a,b2,c2]}
+ if(hit&&!revive){const d=Math.random()<.7?7:(Math.random()*10|0);res=[d,d,d]}else{const a=Math.random()*10|0;let b2=Math.random()*10|0,c2=Math.random()*10|0;if(reach){b2=a;do{c2=Math.random()*10|0}while(c2===a)}else{while(a===b2&&b2===c2)c2=Math.random()*10|0}res=[a,b2,c2]}
  return{hit:hit,revive:revive,col:r.col,next:nx,reach:reach,rtype:Math.random()<.5?'gero':'unchi',chance:chance,res:res,ph:nx>0?'next':'spin',k:0,t:0,rt:0,pat:0,patDone:false}}
 function pachiStartSpin(r){const P_=pachi;P_.sp=pachiPlan(r);P_.res=P_.sp.res;P_.spins++;P_.since++;if(P_.sp.ph==='next')pachiNextIn(1)}
 function pachiNextIn(k){const P_=pachi,S_=P_.sp;S_.k=k;S_.t=0;P_.logo={t:0};const bn=PB_NEXT[(Math.random()*PB_NEXT.length)|0];P_.q=bn.map((e,i)=>({t:.15+i*.7,who:e[0],lines:e[1]}));sfx([[500,.04],[700,.05],[900,.06]],'square',.05)}
@@ -963,7 +964,7 @@ function pachiUpd(dt){const P_=pachi;if(!P_)return;
  const S_=P_.sp;if(S_){S_.t+=dt;
   if(S_.ph==='next'){if(S_.t>=1.4){if(S_.k<S_.next)pachiNextIn(S_.k+1);else{S_.ph='spin';S_.t=0}}}
   else if(S_.ph==='spin'){if(S_.reach){if(S_.t>=1.1){S_.ph='reach';S_.rt=0;P_.logo={t:0};pfx(160,60,24,PFW,100,.8);P_.msg=S_.rtype==='gero'?'ゲロリーチ！':'うんちリーチ！';P_.msgT=3;sfx([[300,.08],[240,.1],[300,.08],[240,.1]],'sawtooth',.05)}}else if(S_.t>=1.5)pachiFinish()}
-  else if(S_.ph==='reach'){S_.rt+=dt;if(S_.chance&&!S_.patDone&&S_.rt>=1.5){S_.patDone=true;S_.pat=.9;sfx([[160,.04],[90,.1]],'sawtooth',.08);pachiSay(1,['いたっ！']);P_.msg='チャンスアップ！';P_.msgT=2}if(S_.pat>0)S_.pat-=dt;if(S_.rt>=3.3)pachiFinish()}}}
+  else if(S_.ph==='reach'){S_.rt+=dt;if(S_.chance&&!S_.patDone&&S_.rt>=1.5){S_.patDone=true;S_.pat=.9;sfx([[160,.04],[90,.1]],'sawtooth',.08);pachiSay(1,['いたっ！']);P_.msg='チャンスアップ！';P_.msgT=2}if(S_.pat>0)S_.pat-=dt;if(S_.rt>=(S_.revive?5.2:3.3))pachiFinish()}}}
 function pachiEnd(){const P_=pachi;P_.bn=null;if(Math.random()<.3){P_.kk=5;P_.msg='確変 スタート！';pachiSay(0,['確変だ！台だ！'])}else{P_.msg='おつかれさま';pachiSay(1,['…満足した？'])}P_.msgT=4;if(P_.hold.length&&!P_.sp)pachiStartSpin(P_.hold.shift())}
 function pachiPress(b){if(!pachi)return;if(b==='a'){pachi.auto=!pachi.auto;sfx([[440,.03]],'square',.03)}else if(b==='d'||b==='c'||b==='cow')pachiClose()}
 function pachiClick(x,y){if(!pachi)return;
@@ -987,10 +988,10 @@ function pachiReachFull(R,S_){const u=Math.min(1,S_.rt/3.3),flash=(NOW/90|0)%2;
   pcBodyJ(sc(1.55,150,168),0,0,false,tint);
   pcBodyT(sc(1.25,254,168),0,0);
   if(u>.55){R(240,150,26,18,'#8a8a90');R(238,148,30,4,'#b0b0b8')}
-  if(u>.7&&S_.hit){const f=Math.min(1,(u-.7)/.22);for(let i=0;i<30;i++){const t=f-i*.018;if(t<=0)continue;const px=168+t*92*(.55+(i%5)*.14),py=92+t*14+t*t*(70+(i%4)*16);R(px,py,5,5,i%3?'#78c040':'#a8d860')}
+  if(u>.7&&S_.hit&&!S_.revive){const f=Math.min(1,(u-.7)/.22);for(let i=0;i<30;i++){const t=f-i*.018;if(t<=0)continue;const px=168+t*92*(.55+(i%5)*.14),py=92+t*14+t*t*(70+(i%4)*16);R(px,py,5,5,i%3?'#78c040':'#a8d860')}
    if(f>.6)R(190,150,Math.min(70,(f-.6)*190),6,'#78c040')}
-  const cap=u<.3?'平山犬が鏡を見ている…':u<.55?'急にトイレへダッシュ！':u<.72?'オロロロ…':S_.hit?'ゲロリーチ成功！！':'間に合った…';
-  R(0,150,320,30,'rgba(0,0,0,.55)');TB(cap,160,155,16,u>.72?'#c8f080':'#fcfcfc','center','#000');
+  const cap=u<.3?'平山犬が鏡を見ている…':u<.55?'急にトイレへダッシュ！':u<.72?'オロロロ…':S_.hit&&!S_.revive?'ゲロリーチ成功！！':'間に合った…';
+  R(0,150,320,30,'rgba(0,0,0,.55)');pachiFit(cap,160,155,16,u>.72?'#c8f080':'#fcfcfc','center','#000',300);
  }else{
   /* 井関がサックスを吹き、そこからうんちを作り出す演出 */
   R(-4,0,330,180,'#18202c');for(let i=0;i<18;i++)R((i*47)%320,18+(i*29)%112,2,2,'#303c4c');
@@ -1006,8 +1007,8 @@ function pachiReachFull(R,S_){const u=Math.min(1,S_.rt/3.3),flash=(NOW/90|0)%2;
    const lv=Math.min(5,Math.floor(build*6));
    for(let i=0;i<lv;i++){const w=18+i*9;R(238-w/2,148-i*10,w,10,i%2?'#8a542c':'#a06a36');R(238-w/2+2,148-i*10,Math.max(3,w-4),2,'#c08a4c')}
   }
-  const cap=u<.18?'井関がサックスを構える…':u<.88?'井関がサックスでうんちを作っている！':(S_.hit?'うんち完成！！':'うんちが完成しなかった…');
-  R(0,152,320,28,'rgba(0,0,0,.55)');TB(cap,160,156,14,flash?'#f8d800':'#fcfcfc','center','#000');
+  const cap=u<.18?'井関がサックスを構える…':u<.88?'井関がサックスでうんちを作っている！':(S_.hit&&!S_.revive?'うんち完成！！':'うんちが完成しなかった…');
+  R(0,152,320,28,'rgba(0,0,0,.55)');pachiFit(cap,160,156,14,flash?'#f8d800':'#fcfcfc','center','#000',300);
  }
  ctx.restore();
  /* 映像のしあげ：周辺の暗がり・走査線 */
@@ -1017,7 +1018,8 @@ function pachiReachFull(R,S_){const u=Math.min(1,S_.rt/3.3),flash=(NOW/90|0)%2;
  /* 右上：いまの出目 */
  R(206,4,110,24,'rgba(0,0,0,.7)');for(let i=0;i<3;i++){const bx=210+i*34;R(bx,6,30,20,'#fff');const q=i===2&&u<.93;TB(q?'?':String(S_.res[i]),bx+15,7,16,q?'#d00000':(S_.res[i]===7?'#d00000':'#202020'),'center','#fff')}
  /* 結果をはっきり */
- if(u>.93){R(0,20,320,34,'rgba(0,0,0,.7)');if(S_.hit)TB(S_.revive?'復活大当たり！！':'大当たり！！',160,22,S_.revive?23:28,flash?'#f8d800':'#fff','center','#000');else TB('ハズレ…',160,24,24,'#a0a0b0','center','#000')}
+ if(u>.93){R(0,20,320,34,'rgba(0,0,0,.7)');if(S_.hit&&!S_.revive)TB('大当たり！！',160,22,28,flash?'#f8d800':'#fff','center','#000');else TB('ハズレ…',160,24,24,'#a0a0b0','center','#000')}
+ if(S_.revive&&S_.rt>=3.65){const a=Math.min(1,(S_.rt-3.65)/.35);ctx.save();ctx.globalAlpha=a;R(0,0,320,180,'#000');pachiFit('ちわー。Uberでーす',160,78,18,'#fff','center','#000',300);ctx.restore()}
  if(S_.revive&&u>.72){R(176,96,140,48,'rgba(0,0,0,.72)');drawF({x:198,y:143,face:-1,saxT:0,aiT:0,guard:false,ko:false,stun:0,walk:0,md:{cow:0,horse:0,wolf:0}},PZ,143);TB('ちわー。Uberでーす',244,105,9,'#fff','center','#000');TB('復活！！',244,122,15,'#f8d800','center','#000')}
  /* チャンスアップ：背中を叩く（全画面） */
  if(S_.pat>0){const k=1-S_.pat/.9;R(0,0,320,180,'#201000');for(let i=0;i<28;i++){const a=i/28*6.283;ctx.strokeStyle=i%2?'#f8d800':'#e03010';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(160,90);ctx.lineTo(160+Math.cos(a)*260,90+Math.sin(a)*260);ctx.stroke()}
@@ -1132,7 +1134,7 @@ function drawPachi(){slotSave();const P_=pachi;if(!P_)return;if(!pachiCabCv){pac
   else if(S_&&S_.ph==='next'){R(L.x,sy0,L.w,SH,'rgba(0,10,40,.6)');TB('NEXT '+S_.k,161,sy0+11,17,'#002040','center','#002040');TB('NEXT '+S_.k,160,sy0+10,17,(NOW/90|0)%2?'#80f8ff':'#fff','center','#0070a0')}
   if(P_.kk>0&&!bonus){R(L.x+L.w-34,sy0+2,32,9,'rgba(0,0,0,.6)');TB('確変 '+P_.kk,L.x+L.w-18,sy0+3,7,'#f8d800','center','#000')}
   if(P_.big){const t=P_.big.t,sz=Math.round(18-Math.min(6,t*14)+Math.sin(t*14)*1.5);R(L.x,sy0+4,L.w,32,'rgba(0,0,0,.65)');TB('大当たり！！',161,sy0+9,sz,'#400000','center','#400000');TB('大当たり！！',160,sy0+8,sz,(NOW/80|0)%2?'#f8d800':'#fff','center','#e03010')}
-  if(P_.sayT>0&&P_.say){R(L.x+1,sy0+SH-12,L.w-2,11,'rgba(0,0,0,.78)');TB((P_.say.who===2?'ハラちゃん':P_.say.who?'中村':'平山')+'「'+P_.say.lines[0]+'」',160,sy0+SH-10,6,P_.say.who?'#f8d890':'#80d8fc','center','#000')}
+  if(P_.sayT>0&&P_.say){R(L.x+1,sy0+SH-12,L.w-2,11,'rgba(0,0,0,.78)');pachiFit((P_.say.who===2?'ハラちゃん':P_.say.who?'中村':'平山')+'「'+P_.say.lines[0]+'」',160,sy0+SH-10,6,P_.say.who?'#f8d890':'#80d8fc','center','#000',L.w-4)}
   /* 液晶の走査線 */
   ctx.globalAlpha=.07;for(let y=sy0;y<sy0+SH;y+=2)R(L.x,y,L.w,1,'#000');ctx.globalAlpha=1;
   /* 下の帯：保留（地蔵）と数字 */
@@ -1189,7 +1191,7 @@ function drawPachi(){slotSave();const P_=pachi;if(!P_)return;if(!pachiCabCv){pac
   R(cx-12,cy+9,24,5,'#404048');R(cx-12,cy+9,24,1,'#808090');ctx.fillStyle=col;ctx.beginPath();ctx.arc(cx,cy,11,Math.PI,0);ctx.fill();R(cx-11,cy,22,9,col);R(cx-6,cy-8,4,6,'rgba(255,255,255,.55)');ctx.restore()}
  R(247,84,66,44,'#000');R(248,85,64,42,'#081018');R(248,85,64,1,'#1a4a50');TB('テロップ',280,87,6,'#58f8d8','center','#000');
  if(P_.msgT>0)TB(P_.msg,280,98,8,'#f8d800','center','#000');
- if(P_.sayT>0&&P_.say){TB(P_.say.who===2?'ハラちゃん':P_.say.who?'中村':'平山',280,108,7,P_.say.who?'#f8d890':'#80d8fc','center','#000');TB('「'+P_.say.lines[0]+'」',280,117,7,'#fcfcfc','center','#000')}
+ if(P_.sayT>0&&P_.say){TB(P_.say.who===2?'ハラちゃん':P_.say.who?'中村':'平山',280,108,7,P_.say.who?'#f8d890':'#80d8fc','center','#000');pachiFit('「'+P_.say.lines[0]+'」',280,117,7,'#fcfcfc','center','#000',60)}
  R(247,132,66,40,'#000');R(248,133,64,38,'#1a0a00');R(248,133,64,1,'#5a3a10');TB('出玉',280,135,7,'#f8b800','center','#000');TB(String(P_.tot),280,146,16,(bonus&&(NOW/120|0)%2)?'#fff':'#f8d800','center','#000');TB('1玉=1コイン',280,163,6,'#8090b0','center','#000');
  if(reach)pachiReachZoom(R,S_)}
 
