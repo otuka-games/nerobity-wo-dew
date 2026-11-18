@@ -1203,8 +1203,7 @@ S.g++;S.st='spin';S.win=0;S.fl=0;S.reels.forEach((r,i)=>{r.p=md(r.p);r.v=10+i;r.
 function slotUpd(dt){const S=slot;if(S.fl>0)S.fl-=dt;if(S.st!=='spin')return;let all=true;for(const r of S.reels){if(r.done)continue;if(r.stop==null)r.p+=r.v*dt;else{r.p+=Math.min(r.stop-r.p,14*dt);if(r.stop-r.p<.001){r.p=r.stop;r.done=true;sfx([[120,.04]],'square',.05)}}if(!r.done)all=false}
 if(all){const stops=S.reels.map(r=>md(r.p)),q=stops.map(n=>STRIP[n]),rows=[stops.map(n=>STRIP[md(n+1)]),q,stops.map(n=>STRIP[md(n-1)])],wins=rows.map(winOf),lineWins=wins.filter(Boolean),bonusWin=lineWins.includes('BIG')?'BIG':lineWins.includes('REG')?'REG':null;let win=0,m='はずれ…';
 if(bonusWin&&!S.inB){S.bonus=bonusWin==='BIG'?8:5;S.bpay=bonusWin==='BIG'?10:8;S.pend=null;m=bonusWin==='BIG'?'BIG BONUS！！ 8G':'REG BONUS！ 5G';S.fl=2.4;sfx([[523,.08],[659,.08],[784,.08],[1047,.08],[784,.08],[1047,.25]],'square',.05)}
-else if(lineWins.includes('replay')){S.free=true;m='リプレイ！ 次は3枚いらない'}
-else{const pays={bell:S.inB?S.bpay:10,melon:8,cherry:2};for(const v of lineWins)if(pays[v]!=null)win+=pays[v];if(win>0){const count=lineWins.filter(v=>pays[v]!=null).length;m=(count>1?count+'ライン！ ':'')+(S.inB?'ボーナス +':'当たり！ +')+win+(S.inB?'  のこり'+S.bonus+'G':'枚')}}
+else{const replay=lineWins.includes('replay');if(replay){S.free=true;m='リプレイ！ 次は3枚いらない'}const pays={bell:S.inB?S.bpay:10,melon:8,cherry:2};for(const v of lineWins)if(pays[v]!=null)win+=pays[v];if(win>0){const count=lineWins.filter(v=>pays[v]!=null).length;m=(replay?'リプレイ！ ':'')+(count>1?count+'ライン！ ':'')+(S.inB?'ボーナス +':'当たり！ +')+win+(S.inB?'  のこり'+S.bonus+'G':'枚')}}
 if(S.inB&&S.bonus===0&&lineWins.includes('bell'))m+=' ボーナス終了';
 S.c+=win;S.win=win;S.best=Math.max(S.best,S.c);S.msg=m;if(win>=8){S.fl=1.4;sfx([[784,.06],[988,.06],[1319,.12]],'square',.05)}
 S.st=(S.c<3&&!S.free&&S.bonus===0)?'over':'idle';if(S.st==='over')sfx([[300,.15],[200,.15],[120,.4]],'sawtooth',.05)}}
