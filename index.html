@@ -1040,7 +1040,7 @@ function pfx(x,y,n,pal,spd,life){const P_=pachi;if(!P_)return;for(let i=0;i<n&&P
 const PFW=['#f8d800','#ff5038','#58f858','#40c8ff','#ff70f0','#fff'];
 const LCD={x:116,y:22,w:88,h:66};
 /* 液晶ズーム：リーチ中、中央の液晶が画面いっぱいに広がって演出を見せる */
-function pachiReachZoom(R,S_){const t=S_.rt,zi=Math.min(1,t/.35),zo=t>2.95?Math.max(0,(3.3-t)/.35):1,z0=Math.min(zi,zo),z=z0*z0*(3-2*z0),s0=.27,s=s0+(1-s0)*z,cyz=(LCD.y+24)+(90-(LCD.y+24))*z;
+function pachiReachZoom(R,S_){const t=S_.rt,end=S_.revive?5.2:3.3,zi=Math.min(1,t/.35),zo=t>end-.35?Math.max(0,(end-t)/.35):1,z0=Math.min(zi,zo),z=z0*z0*(3-2*z0),s0=.27,s=s0+(1-s0)*z,cyz=(LCD.y+24)+(90-(LCD.y+24))*z;
  ctx.save();ctx.translate(160,cyz);ctx.scale(s,s);ctx.translate(-160,-90);R(-6,-6,332,192,'#f8d800');R(-3,-3,326,186,'#000');ctx.beginPath();ctx.rect(0,0,320,180);ctx.clip();pachiReachFull(R,S_);ctx.restore()}
 /* ===== クオリティ強化：静的パーツは一度だけ描いて使い回す ===== */
 let pachiCabCv=null,pachiBallCv=null,pachiPegCv=null,pachiPegCv2=null;
