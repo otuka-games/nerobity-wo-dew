@@ -933,7 +933,7 @@ function pachiStep(b,dt,attOpen){b.vy+=PGRAV*dt;const sp=Math.hypot(b.vx,b.vy);i
 /* 保留：入った瞬間に当たりハズレと色が決まる。青がいちばん熱い（あえて） */
 function pachiRoll(){const P_=pachi,hit=Math.random()<(P_.kk>0?PAY.hitK:PAY.hit);if(P_.kk>0)P_.kk--;
  const w=hit?[.12,.23,.27,.38]:[.78,.14,.06,.02];let x=Math.random(),c=3;for(let i=0;i<4;i++){if(x<w[i]){c=i;break}x-=w[i]}return{hit:hit,col:c}}
-function pachiPlan(r){const hit=r.hit,nw=hit?[.4,.25,.2,.15]:[.8,.13,.05,.02];let x=Math.random(),nx=3;for(let i=0;i<4;i++){if(x<nw[i]){nx=i;break}x-=nw[i]}
+function pachiPlan(r){let hit=r.hit;const nw=hit?[.4,.25,.2,.15]:[.8,.13,.05,.02];let x=Math.random(),nx=3;for(let i=0;i<4;i++){if(x<nw[i]){nx=i;break}x-=nw[i]}
  const reach=hit||Math.random()<.13+nx*.1,chance=reach&&Math.random()<(hit?.55:.15);const revive=!hit&&reach&&Math.random()<.12;if(revive)hit=true;let res;
  if(hit){const d=Math.random()<.7?7:(Math.random()*10|0);res=[d,d,d]}else{const a=Math.random()*10|0;let b2=Math.random()*10|0,c2=Math.random()*10|0;if(reach){b2=a;do{c2=Math.random()*10|0}while(c2===a)}else{while(a===b2&&b2===c2)c2=Math.random()*10|0}res=[a,b2,c2]}
  return{hit:hit,revive:revive,col:r.col,next:nx,reach:reach,rtype:Math.random()<.5?'gero':'unchi',chance:chance,res:res,ph:nx>0?'next':'spin',k:0,t:0,rt:0,pat:0,patDone:false}}
