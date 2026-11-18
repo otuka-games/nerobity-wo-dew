@@ -1201,12 +1201,11 @@ if(S.inB){S.bonus--;S.role='bell';S.msg='ボーナス中！ ベルを狙え'}
 else{if(S.free)S.free=false;else S.c-=3;S.role=S.pend?'miss':lot();S.msg='ストップ！ 左から順に止めよう';if(!S.pend&&(S.role==='BIG'||S.role==='REG')){S.pend=S.role;S.role='miss'}if(S.pend)S.msg='ペカッ！！ 7を狙え！'}
 S.g++;S.st='spin';S.win=0;S.fl=0;S.reels.forEach((r,i)=>{r.p=md(r.p);r.v=10+i;r.stop=null;r.done=false});sfx([[200,.04],[300,.04],[400,.06]],'square',.04)}
 function slotUpd(dt){const S=slot;if(S.fl>0)S.fl-=dt;if(S.st!=='spin')return;let all=true;for(const r of S.reels){if(r.done)continue;if(r.stop==null)r.p+=r.v*dt;else{r.p+=Math.min(r.stop-r.p,14*dt);if(r.stop-r.p<.001){r.p=r.stop;r.done=true;sfx([[120,.04]],'square',.05)}}if(!r.done)all=false}
-if(all){const q=S.reels.map(r=>STRIP[md(r.p)]),w=winOf(q);let win=0,m='はずれ…';
-if(w==='replay'){S.free=true;m='リプレイ！ 次は3枚いらない'}
-else if(w==='bell'){win=S.inB?S.bpay:10;m=S.inB?'ボーナス +'+win+'  のこり'+S.bonus+'G':'ベル！ +10'}
-else if(w==='melon'){win=8;m='スイカ！ +8'}else if(w==='cherry'){win=2;m='チェリー！ +2'}
-else if((w==='BIG'||w==='REG')&&!S.inB){S.bonus=w==='BIG'?8:5;S.bpay=w==='BIG'?10:8;S.pend=null;m=w==='BIG'?'BIG BONUS！！ 8G':'REG BONUS！ 5G';S.fl=2.4;sfx([[523,.08],[659,.08],[784,.08],[1047,.08],[784,.08],[1047,.25]],'square',.05)}
-if(S.inB&&S.bonus===0&&w==='bell')m+=' ボーナス終了';
+if(all){const stops=S.reels.map(r=>md(r.p)),q=stops.map(n=>STRIP[n]),rows=[stops.map(n=>STRIP[md(n+1)]),q,stops.map(n=>STRIP[md(n-1)])],wins=rows.map(winOf),lineWins=wins.filter(Boolean),bonusWin=lineWins.includes('BIG')?'BIG':lineWins.includes('REG')?'REG':null;let win=0,m='はずれ…';
+if(bonusWin&&!S.inB){S.bonus=bonusWin==='BIG'?8:5;S.bpay=bonusWin==='BIG'?10:8;S.pend=null;m=bonusWin==='BIG'?'BIG BONUS！！ 8G':'REG BONUS！ 5G';S.fl=2.4;sfx([[523,.08],[659,.08],[784,.08],[1047,.08],[784,.08],[1047,.25]],'square',.05)}
+else if(lineWins.includes('replay')){S.free=true;m='リプレイ！ 次は3枚いらない'}
+else{const pays={bell:S.inB?S.bpay:10,melon:8,cherry:2};for(const v of lineWins)if(pays[v]!=null)win+=pays[v];if(win>0){const count=lineWins.filter(v=>pays[v]!=null).length;m=(count>1?count+'ライン！ ':'')+(S.inB?'ボーナス +':'当たり！ +')+win+(S.inB?'  のこり'+S.bonus+'G':'枚')}}
+if(S.inB&&S.bonus===0&&lineWins.includes('bell'))m+=' ボーナス終了';
 S.c+=win;S.win=win;S.best=Math.max(S.best,S.c);S.msg=m;if(win>=8){S.fl=1.4;sfx([[784,.06],[988,.06],[1319,.12]],'square',.05)}
 S.st=(S.c<3&&!S.free&&S.bonus===0)?'over':'idle';if(S.st==='over')sfx([[300,.15],[200,.15],[120,.4]],'sawtooth',.05)}}
 function drawPass(){ctx.fillStyle='#180000';ctx.fillRect(0,0,W,H);ctx.fillStyle='#a81000';ctx.fillRect(0,0,W,25);T('パスワード',160,4,17,'#f8b800','center');ctx.fillStyle='#f8b800';ctx.fillRect(7,28,306,1);
@@ -1228,7 +1227,7 @@ else TB('7',cx,cy-12,24,'#fcfcfc','center','#d82800')}
 function payTable(){const mini=(k,cx,cy,dim)=>{ctx.save();ctx.globalAlpha=dim?.35:1;ctx.translate(cx,cy);ctx.scale(.5,.5);symDraw(k,0,0);ctx.restore()},
 box=(x,y,k3,nm,pay,dim)=>{ctx.fillStyle='#f8b800';ctx.fillRect(x,y,56,38);ctx.fillStyle='#300808';ctx.fillRect(x+1,y+1,54,36);k3.forEach((k,i)=>mini(k,x+11+i*17,y+10,dim&&i>0));TB(nm,x+28,y+18,9,'#fcfcfc','center');TB(pay,x+28,y+28,8,'#f8d800','center')};
 TB('コインがふえる',31,25,8,'#f8b800','center');TB('とくべつ',289,25,8,'#f8b800','center');
-box(3,36,[0,0,0],'ベル','10まい');box(3,77,[1,1,1],'スイカ','8まい');box(3,118,[2,2,2],'チェリー','左だけ2まい',true);
+box(3,36,[0,0,0],'ベル','10まい');box(3,77,[1,1,1],'スイカ','8まい');box(3,118,[2,2,2],'チェリー','1ライン2まい',true);
 box(261,36,[3,3,3],'リプレイ','つぎタダ');box(261,77,[5,5,5],'BIG','ボーナス8G');box(261,118,[4,4,5],'REG','ボーナス5G')}
 function drawSlot(){slotSave();const S=slot,R=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h)},fl=S.fl>0&&(NOW/100|0)%2,pk=S.pend&&(NOW/180|0)%2,lit=fl||pk;ctx.fillStyle='#180000';ctx.fillRect(0,0,W,H);
 /* 左上：リール内の光津郷と同じ顔シンボル(symDrawの4番)を拡大表示 */
