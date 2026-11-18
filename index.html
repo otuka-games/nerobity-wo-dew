@@ -1032,7 +1032,8 @@ function pachiLogos(R,t){const u=t/1.7,e=x=>1-(1-x)*(1-x),p=u<.25?e(u/.25):u<.75
  for(let i=0;i<4;i++){const x=cn[i][0]+(tg[i][0]-cn[i][0])*p,y=cn[i][1]+(tg[i][1]-cn[i][1])*p+Math.sin(NOW/80+i)*(p>.9?1.5:0);
   R(x-1,y-1,36,14,'#000');R(x,y,34,12,(NOW/90+i|0)%2?'#d01818':'#f02828');R(x,y,34,1,'#f8d800');R(x,y+11,34,1,'#f8d800');TB('転転飯店',x+17,y+2,7,'#f8d800','center','#400000')}
  if(p>.85){const sc=(k,ox,oy)=>(x,y,w,h,c)=>R(ox+x*k,oy+y*k,Math.max(1,Math.round(w*k)),Math.max(1,Math.round(h*k)),c);
-  R(143,36,17,18,'#000');R(144,37,15,16,'#f8d8a0');pcHeadJ(sc(.6,147,43),0,0);R(160,36,17,18,'#000');R(161,37,15,16,'#f8d8a0');pcHeadT(sc(.6,164,43),0,0)}}
+  R(143,36,17,18,'#000');R(144,37,15,16,'#f8d8a0');pcHeadJ(sc(.6,147,43),0,0);R(160,36,17,18,'#000');R(161,37,15,16,'#f8d8a0');pcHeadT(sc(.6,164,43),0,0);
+  pcBodyJ(sc(.48,72,124),0,0,false);pcBodyT(sc(.48,232,124),0,0)}}
 function pfx(x,y,n,pal,spd,life){const P_=pachi;if(!P_)return;for(let i=0;i<n&&P_.fx.length<320;i++){const a=Math.random()*6.283,v=spd*(.4+Math.random()*.8);P_.fx.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-spd*.3,t:life*(.6+Math.random()*.6),c:pal[(Math.random()*pal.length)|0]})}}
 const PFW=['#f8d800','#ff5038','#58f858','#40c8ff','#ff70f0','#fff'];
 const LCD={x:116,y:22,w:88,h:66};
@@ -1281,7 +1282,7 @@ function drawSlotPachiFX(FX){
  /* どのリーチにも出る激熱の背中ポン */
  if(t>2.65&&t<3.25&&FX.hit){R(0,0,320,180,'rgba(255,150,0,.72)');for(let i=0;i<18;i++){const a=i/18*Math.PI*2;ctx.strokeStyle=i%2?'#fff':'#f8d800';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(160,90);ctx.lineTo(160+Math.cos(a)*190,90+Math.sin(a)*110);ctx.stroke()}TB('背中をポン！！',160,68,24,'#fff','center','#a02010');TB('激　熱',160,112,22,'#f8d800','center','#600')}
  if(t>=3.25&&t<4.8){
-  if(FX.revive){TB('……ハズレ！？',160,38,20,'#bcbcbc','center');TB('ちわー。Uberでーす',160,88,19,'#f8d800','center','#600');TB('復活！！',160,122,24,'#fff','center','#a00000')}
+  if(FX.revive){TB('……ハズレ！？',160,30,20,'#bcbcbc','center');drawF({x:72,y:157,face:1,saxT:0,aiT:0,guard:false,ko:false,stun:0,walk:0,md:{cow:0,horse:0,wolf:0}},PZ,157);TB('ちわー。Uberでーす',205,83,15,'#f8d800','center','#600');TB('復活！！',205,112,22,'#fff','center','#a00000')}
   else if(FX.hit){TB(FX.bonus?'ボーナス確定！！':'大当たり！！',160,70,26,flash?'#fff36a':'#f8d800','center','#600');TB(FX.kind==='gero'?'ゲロリーチ成功！':'うんこ完成！！',160,108,14,'#fff','center')}
   else{TB('残念…',160,80,26,'#bcbcbc','center');TB('次回に期待！',160,116,13,'#fff','center')}
  }
