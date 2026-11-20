@@ -1375,9 +1375,9 @@ const pcBodyI=(R,x,y)=>body(R,x,y,'#0058f8','#0000bc','#0000a8','#f8a060');
 /* ---- 抽選：リーチ種類・発展・復活・チャンスアップ ---- */
 window.pachiPlan=function(r){const hit=r.hit,nw=hit?[.4,.25,.2,.15]:[.8,.13,.05,.02];let x=Math.random(),nx=3;for(let i=0;i<4;i++){if(x<nw[i]){nx=i;break}x-=nw[i]}
  const reach=hit||Math.random()<.13+nx*.1,rt=hit?(Math.random()<.5?'gero':'unchi'):(Math.random()<.2?'gero':'unchi'),
- dev=hit&&rt==='unchi'&&Math.random()<.6,chance=hit&&Math.random()<.5,rev=hit&&!dev&&Math.random()<.3;let res;
+ dev=false,chance=hit&&Math.random()<.5,rev=hit&&Math.random()<.3;let res;
  if(hit){const d=Math.random()<.7?7:(Math.random()*10|0);res=[d,d,d]}else{const a=Math.random()*10|0;let b=Math.random()*10|0,c=Math.random()*10|0;if(reach){b=a;do{c=Math.random()*10|0}while(c===a)}else{while(a===b&&b===c)c=Math.random()*10|0}res=[a,b,c]}
- let res2=null;if(rev){res2=res;res=[res[0],res[0],(res[0]+1+(Math.random()*8|0))%10]}
+ let res2=null;if(rev){res2=[res[0],res[0],res[0]];res=[res[0],res[0],(res[0]+1+(Math.random()*8|0))%10]}
  return{hit:hit,col:r.col,next:nx,reach:reach,rtype:rt,dev:dev,rev:rev,res2:res2,chance:chance,res:res,ph:nx>0?'next':'spin',k:0,t:0,rt:0,pat:0,patDone:false,sn:0}};
 
 /* ---- 疑似連：ハラちゃんが現場から登場 ---- */
@@ -1387,7 +1387,6 @@ window.pachiNextIn=function(k){const P_=pachi,S_=P_.sp;S_.k=k;S_.t=0;P_.logo={t:
 /* ---- 発展・復活の進行 ---- */
 window.pachiFinish=function(){const S_=pachi.sp;
  if(S_&&S_.ph==='reach'){
-  if(S_.dev&&!S_.devd){S_.devd=1;S_.rtype='gero';S_.rt=0;S_.sn=0;S_.patDone=false;pachi.msg='激熱！エピソードに発展！';pachi.msgT=3;pachi.logo={t:0};pfx(160,60,24,PFW,100,.8);sfx([[523,.06],[659,.06],[784,.06],[1047,.15]],'square',.06);return}
   if(S_.rev&&!S_.revd){S_.revd=1;S_.ph='rev';S_.vt=0;S_.sn=0;pachi.msg='……！？';pachi.msgT=2;return}}
  _fin()};
 window.pachiUpd=function(dt){_upd(dt);const P_=pachi;if(!P_)return;
@@ -1411,11 +1410,11 @@ window.drawPachi=function(){_dp();const P_=pachi;if(!P_)return;
  if(hot){ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(160,60,10,160,60,130);g.addColorStop(0,'rgba(255,200,80,'+(.18+.08*Math.sin(NOW/90))+')');g.addColorStop(1,'rgba(255,100,0,0)');ctx.fillStyle=g;ctx.fillRect(PX0,PY0,PX1-PX0,PY1-PY0);ctx.restore()}
  ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.3;for(const b of P_.b)ctx.drawImage(pachiPegCv2,Math.round(b.x-3.5),Math.round(b.y-3.5));ctx.restore();
  /* 疑似連：ハラちゃんカットイン */
- if(S_&&S_.ph==='next'&&P_.hara){const h=P_.hara,L=LCD,e=Math.min(1,h.t/.25),f=Math.min(1,(1.4-h.t)/.2),ox=L.x+L.w-Math.round(e*56)+(f<1?Math.round((1-f)*60):0);
+ if(S_&&S_.ph==='next'&&P_.hara){const h=P_.hara,L=LCD,e=Math.min(1,h.t/.25),f=Math.min(1,(1.4-h.t)/.2),ox=L.x+L.w-22+Math.round((1-e)*42)+(f<1?Math.round((1-f)*42):0);
   ctx.save();ctx.beginPath();ctx.rect(L.x,L.y,L.w,L.h-18);ctx.clip();R(L.x,L.y,L.w,L.h-18,'rgba(0,10,40,.6)');
   for(let i=0;i<10;i++)R(L.x+((i*17+NOW/8)%L.w),L.y,2,L.h-18,'rgba(120,200,255,.18)');
   pcBodyH(SC(R,.7,ox,L.y+47),0,0);
-  const t=h.txt.split('、'),bx=L.x+3,by=L.y+6;R(bx-1,by-1,57,32,'#000');R(bx,by,55,30,'#fff');R(bx+50,by+30,5,4,'#000');R(bx+51,by+29,3,2,'#fff');
+  const t=h.txt.split('、'),bx=L.x+3,by=L.y+6;R(bx-1,by-1,57,32,'#000');R(bx,by,55,30,'#fff');R(bx+50,by+30,5,4,'#000');R(bx+51,by+29,3,2,'#fff');R(bx+53,by+31,5,3,'#000');R(bx+54,by+31,3,2,'#fff');
   TB('ハラ',bx+3,by+1,6,'#a04020','left','#fff');TB(t[0]+(t[1]?'、':''),bx+3,by+9,6,'#000','left','#fff');TB(t[1]||'',bx+3,by+18,6,'#000','left','#fff');
   ctx.restore();if(h.t<.4&&(NOW/70|0)%2)TB('ハラちゃん登場！',160,L.y-14,9,'#f8d800','center','#000')}};
 
